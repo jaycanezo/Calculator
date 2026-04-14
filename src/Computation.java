@@ -6,7 +6,8 @@ public class Computation implements ComputationInterface, ActionListener {
     private double num1 = 0, num2 = 0, result = 0;
     private char operator;
     private Calculator calculator;
-    private DecimalFormat df = new DecimalFormat("0.00");
+    private boolean startNewNumber = false;
+    private DecimalFormat df = new DecimalFormat("#.##");
 
     public Computation(Calculator calculator) {
         this.calculator = calculator;
@@ -60,7 +61,14 @@ public class Computation implements ComputationInterface, ActionListener {
         // Number buttons
         for (int i = 0; i < 10; i++) {
             if (e.getSource() == calculator.numberButtons[i]) {
+                // 1. If we just finished a calculation, clear the screen for the new number
+                if (startNewNumber) {
+                    calculator.textField.setText("");
+                    startNewNumber = false;
+                }
+                // 2. Append the number pressed
                 calculator.textField.setText(calculator.textField.getText().concat(String.valueOf(i)));
+                return; // Exit method early since we found the button
             }
         }
 
@@ -78,9 +86,10 @@ public class Computation implements ComputationInterface, ActionListener {
 
         if (e.getSource() == calculator.equButton) {
             setNum2(Double.parseDouble(calculator.textField.getText()));
-            double finalResult = calculate();
-            calculator.textField.setText(String.valueOf(finalResult));
+            double result = calculate();
+            calculator.textField.setText(df.format(result));
             setOperator('\0');
+            startNewNumber = true;
         }
 
         if (e.getSource() == calculator.clrButton) {
@@ -98,6 +107,7 @@ public class Computation implements ComputationInterface, ActionListener {
             String currentText = calculator.textField.getText();
             
             if (!currentText.isEmpty()) {
+                startNewNumber = false;
                 if (operator != '\0') { 
                     setNum2(Double.parseDouble(currentText));
                     calculate();
