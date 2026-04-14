@@ -61,14 +61,12 @@ public class Computation implements ComputationInterface, ActionListener {
         // Number buttons
         for (int i = 0; i < 10; i++) {
             if (e.getSource() == calculator.numberButtons[i]) {
-                // 1. If we just finished a calculation, clear the screen for the new number
                 if (startNewNumber) {
                     calculator.textField.setText("");
                     startNewNumber = false;
                 }
-                // 2. Append the number pressed
                 calculator.textField.setText(calculator.textField.getText().concat(String.valueOf(i)));
-                return; // Exit method early since we found the button
+                return;
             }
         }
 
